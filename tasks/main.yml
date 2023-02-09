@@ -1,15 +1,16 @@
 ---
 # tasks file for vector
-- name: Get vector distrib
-  get_url:
-    url: "https://packages.timber.io/vector/{{ vector_version }}/vector-{{ vector_version }}-1.x86_64.rpm"
-    dest: "./vector-{{ vector_version }}-1.x86_64.rpm"
+- name: Install vector package for CentOS
+  ansible.builtin.yum:
+    name: "{{ vector_url_rpm }}"
+    state: present
+    disable_gpg_check: true
+  when: ansible_distribution == "CentOS"
 
-- name: Install vector package
-  yum:
-    name:
-      - vector-{{ vector_version }}-1.x86_64.rpm
-    disable_gpg_check: True
+- name: Install vector package for Ubuntu
+  ansible.builtin.apt:
+    deb: "{{ vector_url_deb }}"
+  when: ansible_distribution == "Ubuntu"
 
 - name: Server configuration file
   template:
